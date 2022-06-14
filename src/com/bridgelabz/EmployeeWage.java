@@ -3,44 +3,37 @@ package com.bridgelabz;
 public class EmployeeWage {
 
     public static final int IS_PART_TIME = 1;
-
     public static final int IS_FULL_TIME = 2;
     public static final int FULL_DAY_HR = 8;
     public static final int PART_DAY_HR = 4;
-    // Declaring Variable
-    private static String companyName;
-    private static int empWagePerHr;
-    private static int numMaxWorkingDay;
-    private static int maxHrsInMonth;
-    private static int totalEmpWage;
 
-    // Constructor
-    public EmployeeWage(String companyName, int empWagePerHr, int numMaxWorkingDay, int maxHrsInMonth) {
-        this.companyName = companyName;
-        this.empWagePerHr = empWagePerHr;
-        this.numMaxWorkingDay = numMaxWorkingDay;
-        this.maxHrsInMonth = maxHrsInMonth;
-    }
-
-    @Override
-    public String toString() {
-        return "Total EmpWAge for " + companyName + "  " + totalEmpWage;
-    }
+    private CompanyWage[] CompanyWage= new CompanyWage[5];
+    private int numOfCompany = 0;
 
     public static void main(String[] args) {
-        EmployeeWage dellEmpWage = new EmployeeWage("Dell",
-                20, 20, 100);
-        dellEmpWage.computeEmpWage();
-        System.out.println(dellEmpWage);
-        EmployeeWage infosysEmpWage = new EmployeeWage("Infosys",
-                16, 20, 100);
-        infosysEmpWage.computeEmpWage();
-        System.out.println(infosysEmpWage);
+        EmployeeWage empWageBuilder = new EmployeeWage();
+        empWageBuilder.addCompanyEmpWage("Infosys",20,
+                4,10);
+        empWageBuilder.addCompanyEmpWage("Dell",20,
+                14,20);
+        empWageBuilder.computeEmpWageFromArray();
     }
 
-    private void computeEmpWage() {
+    private void addCompanyEmpWage(String companyName, int empWagePerHr,  int numMaxWorkingDay, int maxHrsInMonth) {
+        CompanyWage empWage = new CompanyWage(companyName , empWagePerHr , numMaxWorkingDay , maxHrsInMonth);
+        CompanyWage[numOfCompany] = empWage;
+        numOfCompany++;
+    }
+    private void computeEmpWageFromArray() {
+        for (int i= 0; i< numOfCompany; i++){
+            int totalWage =computeEmpWage(CompanyWage[i]);
+            CompanyWage[i].totalEmpWage= totalWage;
+            System.out.println(CompanyWage[i]);
+        }
+    }
+    private int computeEmpWage(CompanyWage companyEmpWage) {
         int totalEmpHours = 0, totalWorkingDays = 0, workingHours = 0;
-        while (totalEmpHours < maxHrsInMonth && totalWorkingDays < numMaxWorkingDay) {
+        while (totalEmpHours < companyEmpWage.maxHrsInMonth && totalWorkingDays < companyEmpWage.numMaxWorkingDay) {
             totalWorkingDays++;
             double empCheck = Math.floor(Math.random() * 10) % 3;
             // Calculating Wage On Employee Type
@@ -55,9 +48,8 @@ public class EmployeeWage {
                     workingHours = 0;
             }
             totalEmpHours += workingHours;
-            System.out.println("Day: " + totalWorkingDays + " workingHours: " + workingHours);
+            totalWorkingDays++;
         }
-        //Calculate Employ wage
-        totalEmpWage = totalEmpHours * empWagePerHr;
+        return totalEmpHours * companyEmpWage.empWagePerHr;
     }
 }
